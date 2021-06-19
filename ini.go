@@ -7,6 +7,7 @@ package goini
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -308,6 +309,7 @@ func (ini *INI) parseINI(data []byte, lineSep, kvSep string) error {
 		pos := bytes.Index(line, []byte(kvSep))
 		var k []byte
 		var v []byte
+		fmt.Printf("pos %v line %v", pos, line)
 		if pos < 0 {
 			// ERROR happened when passing
 			//err := errors.New("Came accross an error : " + string(line) + " is NOT a valid key/value pair")
@@ -319,8 +321,6 @@ func (ini *INI) parseINI(data []byte, lineSep, kvSep string) error {
 			v = bytes.TrimSpace(line[pos+len(kvSep):])
 		}
 
-		k = bytes.TrimSpace(line[0:pos])
-		v = bytes.TrimSpace(line[pos+len(kvSep):])
 		if ini.trimQuotes {
 			v = bytes.Trim(v, "'\"")
 		}
