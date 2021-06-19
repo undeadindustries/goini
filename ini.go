@@ -58,6 +58,15 @@ func (ini *INI) ParseFile(filename string) error {
 	return ini.parseINI(contents, DefaultLineSeparator, DefaultKeyValueSeparator)
 }
 
+// Added by UndeadIndustries to simply get sections.
+func (ini *INI) GetSections() []string {
+	sections := []string{}
+	for k, _ := range ini.sections {
+		sections = append(sections, k)
+	}
+	return sections
+}
+
 // Parse parses the data to store the data in the INI
 // A successful call returns err == nil
 func (ini *INI) Parse(data []byte, lineSep, kvSep string) error {
