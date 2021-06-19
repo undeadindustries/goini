@@ -6,14 +6,26 @@ package goini
 
 import (
 	"bytes"
+	"os"
 	"path/filepath"
 	"runtime"
-    "os"
 	"testing"
 
 	"github.com/bmizerany/assert"
 )
 
+func TestGetKeyNoValue(t *testing.T) {
+
+	filename := filepath.Join(getTestDataDir(t), "ini_parser_testfile.ini")
+	ini := New()
+	err := ini.ParseFile(filename)
+	assert.Equal(t, nil, err)
+	m, _ := ini.GetKvmap("Maze")
+	//assert.Equal(t, m, goini.Kvmap{"600": ""})
+	for g, _ := range m {
+		assert.Equal(t, g, "600")
+	}
+}
 func Test1(t *testing.T) {
 
 	filename := filepath.Join(getTestDataDir(t), "ini_parser_testfile.ini")
@@ -697,40 +709,38 @@ func TestReset(t *testing.T) {
 func TestQuoteValue(t *testing.T) {
 	raw := []byte("a=1\nb=True\nc=\"hello world\"\nd='6'")
 	ini := New()
-    err := ini.Parse(raw, "\n", "=")
-    assert.Equal(t, nil, err)
+	err := ini.Parse(raw, "\n", "=")
+	assert.Equal(t, nil, err)
 
-    v, ok := ini.Get("a")
-    assert.Equal(t, v, "1")
-    assert.Equal(t, ok, true)
+	v, ok := ini.Get("a")
+	assert.Equal(t, v, "1")
+	assert.Equal(t, ok, true)
 
-    v, ok = ini.Get("c")
-    assert.Equal(t, v, "\"hello world\"")
-    assert.Equal(t, ok, true)
+	v, ok = ini.Get("c")
+	assert.Equal(t, v, "\"hello world\"")
+	assert.Equal(t, ok, true)
 
-    v, ok = ini.Get("d")
-    assert.Equal(t, v, "'6'")
-    assert.Equal(t, ok, true)
-
+	v, ok = ini.Get("d")
+	assert.Equal(t, v, "'6'")
+	assert.Equal(t, ok, true)
 
 	ini.Reset()
 	ini.SetTrimQuotes(true)
 	err = ini.Parse(raw, "\n", "=")
 	assert.Equal(t, nil, err)
 
-    v, ok = ini.Get("a")
-    assert.Equal(t, v, "1")
-    assert.Equal(t, ok, true)
+	v, ok = ini.Get("a")
+	assert.Equal(t, v, "1")
+	assert.Equal(t, ok, true)
 
 	v, ok = ini.Get("c")
 	assert.Equal(t, v, "hello world")
 	assert.Equal(t, ok, true)
 
-    v, ok = ini.Get("d")
-    assert.Equal(t, v, "6")
-    assert.Equal(t, ok, true)
+	v, ok = ini.Get("d")
+	assert.Equal(t, v, "6")
+	assert.Equal(t, ok, true)
 }
-
 
 // run this by command : go test -test.bench="Benchmark1"
 func Benchmark1(b *testing.B) {
